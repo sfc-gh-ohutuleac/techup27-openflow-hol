@@ -16,7 +16,7 @@
 |------|-------------|
 | `techup27_setup.sql` | SQL script to provision the environment. Run as ACCOUNTADMIN **before** the lab. |
 | `techup27_step_by_step.md` | Processor-by-processor cheat sheet with all configs and gotchas. |
-| `techup27_flow.json` | Exportable/importable NiFi flow definition. Use as a solution key or starting point. |
+| `techup27_flow.json` | Working solution as an exportable NiFi flow definition. Can be imported via drag-and-drop or "Create Process Group" > "Import" in the NiFi UI. Use as a reference if stuck. |
 | `README.md` | This file. |
 
 ---
