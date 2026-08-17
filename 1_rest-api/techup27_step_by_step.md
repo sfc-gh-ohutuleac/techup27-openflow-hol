@@ -92,6 +92,9 @@ When debugging, you can inspect what's queued between two processors:
 
 1. Click on a **connection** (the line between two processors)
 2. Click **"List queue"** in the context panel
+<img width="1194" height="1474" alt="image" src="https://github.com/user-attachments/assets/799cfeb1-4838-43b1-ac27-a21c2e51d5f2" />
+
+
 3. You'll see a list of FlowFiles currently waiting in that connection
 4. Click the **eye icon** on a FlowFile to view its **attributes**
 5. Click the **"View content"** button to see the actual **content** (the JSON body)
