@@ -75,10 +75,12 @@ Connections are created **between two existing processors**. You cannot create a
 **To create a connection:**
 1. Hover over the source processor until you see a small arrow icon
 2. Drag from the source processor to the destination processor
+<img width="598" height="560" alt="image" src="https://github.com/user-attachments/assets/a95699d5-6dcf-4b44-8257-fed910193355" />
+
 3. In the dialog, select which **relationship(s)** to route (e.g., "success", "Response")
 4. Click **Add**
 
-<!-- TODO: add screenshot: create_connection.png -->
+
 
 > **Note:** In the steps below, each processor mentions which relationship to connect and where. Create the connection **after** you have added both the current processor and the next one.
 
