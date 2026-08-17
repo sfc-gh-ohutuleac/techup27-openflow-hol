@@ -1,4 +1,4 @@
-# TechUp27 — Step by Step Guide
+# TechUp27 — REST API - Step by Step Guide
 
 ## Goal
 
@@ -200,6 +200,8 @@ The `${user_id}` is NiFi Expression Language — it reads the FlowFile attribute
 | Property name | Value |
 |---------------|-------|
 | `ingested_at` | `${now():format('yyyy-MM-dd HH:mm:ss')}` |
+
+**Auto-terminate:** failure
 
 **Connection to next:** After creating Step 8, connect `success` -> Build Record.
 
