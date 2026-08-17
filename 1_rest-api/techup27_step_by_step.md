@@ -60,7 +60,7 @@ Both APIs are on the same host (`dummyjson.com`), free, no authentication requir
 ## How to add a processor
 
 1. Drag the **processor icon** from the top toolbar onto the canvas
-   <!-- TODO: add screenshot: drag_processor.png -->
+<img width="627" height="211" alt="image" src="https://github.com/user-attachments/assets/c5185507-874d-4945-b17e-dc99241fb54b" />
 2. In the dialog, search for the processor type (e.g., "GenerateFlowFile")
 3. Select it and click **Add**
 4. Double-click the processor to configure its properties
