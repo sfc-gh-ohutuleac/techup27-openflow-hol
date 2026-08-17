@@ -11,7 +11,7 @@
 -- Prerequisites:
 --   - Openflow quickstart completed (deployment + runtime running)
 --   - ACCOUNTADMIN access
---   - Runtime role: QUICKSTART_OPENFLOW_ROLE (adjust if different)
+--   - Runtime role: QUICKSTART_ROLE (adjust if different)
 --
 -- What this script creates:
 --   1. Database TECHUP27 with schema PUBLIC
@@ -27,10 +27,10 @@
 -- ============================================================================
 -- VARIABLES (adjust these to match your environment)
 -- ============================================================================
-SET openflow_role = 'QUICKSTART_OPENFLOW_ROLE';
+SET openflow_role = 'QUICKSTART_ROLE';
 SET openflow_db = 'OPENFLOW';           -- Database where your runtime lives
 SET openflow_schema = 'OPENFLOW';       -- Schema where your runtime lives
-SET openflow_runtime = 'QUICKSTARTRUNTIME';  -- Your runtime name
+SET openflow_runtime = 'QUICKSTART_RUNTIME';  -- Your runtime name
 
 -- ============================================================================
 -- 1. DATABASE & SCHEMA
