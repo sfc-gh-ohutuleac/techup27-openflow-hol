@@ -26,7 +26,11 @@
 1. **Openflow quickstart guide completed** — deployment + runtime created and running. Follow: [Getting Started with Openflow on SPCS](https://www.snowflake.com/en/developers/guides/getting-started-with-openflow-spcs/)
 2. **Run `techup27_setup.sql` as ACCOUNTADMIN** — creates database, tables, EAI, and grants
 3. **Attach `TECHUP27_LAB_EAI` to the runtime** — via Openflow UI or SQL (see setup script for details)
-4. **Verify runtime is accessible** — open the NiFi canvas from Snowsight
+4. **Verify runtime is accessible** — open the NiFi canvas from Snowsight (Data Engineering > Openflow). **Important:** Users whose **default role** is ACCOUNTADMIN cannot log in to the Openflow runtime. You must change your default role before accessing the canvas:
+   ```sql
+   ALTER USER <your_user> SET DEFAULT_ROLE = OPENFLOW_ADMIN;
+   ALTER USER <your_user> SET DEFAULT_SECONDARY_ROLES = ('ALL');
+   ```
 
 ---
 
