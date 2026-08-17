@@ -331,10 +331,11 @@ PutSnowpipeStreaming2 requires two controller services. Create and enable them n
 
 After building all processors and connections:
 
-1. Right-click the **Trigger** processor > **"Run Once"**
-2. Wait ~20 seconds for data to flow through
+1. Right-click on the **canvas background** (not a processor) > **"Start"** — this starts all processors in the Process Group
+2. Wait ~20 seconds for data to flow through all steps
 3. Check for errors: look for red bulletin icons on any processor
-4. Query the results:
+4. **Stop the flow:** Right-click canvas > **"Stop"** (to prevent the trigger from firing again in 1 hour)
+5. Query the results:
 
 ```sql
 SELECT COUNT(*) FROM TECHUP27.PUBLIC.USER_SPENDING;
