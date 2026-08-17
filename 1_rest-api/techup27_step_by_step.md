@@ -106,25 +106,24 @@ This is essential for debugging:
 
 You don't have to build the entire flow before testing. You can test incrementally:
 
-1. **After connecting your first two processors** (e.g., Trigger -> Fetch Users):
+1. **After connecting your first three processors** (e.g., Trigger -> Fetch Users -> Split Users):
    - Right-click the Trigger processor > **"Run Once"**
-   - A FlowFile will be generated and sent to Fetch Users
    - Right-click Fetch Users > **"Run Once"**
-   - The FlowFile queues in the outgoing connection
+   - The FlowFile queues in the connection between Fetch Users and Split Users
 
 2. **Inspect the result:**
-   - Click the connection after Fetch Users
+   - Click the connection between Fetch Users and Split Users
    - Click **"List queue"** > click the eye icon > **"View content"**
    - You should see the full JSON response from the API
 
 3. **Continue building:**
-   - Add the next processor, connect it
-   - Right-click that processor > **"Run Once"**
-   - Inspect the output connection again
+   - Right-click Split Users > **"Run Once"**
+   - Inspect the output connection to see the 30 individual records
+   - Add the next processor, connect it, run once, inspect again
 
 This "build one step, test, build next step" approach helps catch issues early. You'll know immediately if an API call failed, a JsonPath is wrong, or an attribute wasn't extracted correctly.
 
-> **Tip:** You can also right-click a processor and select **"Start"** to keep it running continuously, then **"Stop"** it when done testing. "Run Once" is better for controlled step-by-step testing.
+> **Why three processors minimum?** With only two processors connected, there's no outgoing connection on the second processor to queue FlowFiles into — the FlowFile has nowhere to go. You need at least a third processor (or auto-terminated relationships) to create a queue you can inspect.
 
 ---
 
