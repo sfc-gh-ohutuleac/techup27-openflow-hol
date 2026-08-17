@@ -117,9 +117,10 @@ You don't have to build the entire flow before testing. You can test incremental
    - You should see the full JSON response from the API
 
 3. **Continue building:**
+   - Add the next processor (e.g., Extract User Info), connect Split Users to it
    - Right-click Split Users > **"Run Once"**
-   - Inspect the output connection to see the 30 individual records
-   - Add the next processor, connect it, run once, inspect again
+   - Inspect the connection between Split Users and Extract User Info to see the 30 individual records
+   - Repeat: add next processor, connect, run once, inspect
 
 This "build one step, test, build next step" approach helps catch issues early. You'll know immediately if an API call failed, a JsonPath is wrong, or an attribute wasn't extracted correctly.
 
