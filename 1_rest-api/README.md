@@ -1,11 +1,11 @@
-# TechUp27 — REST API
+# TechUp27 — Openflow "Zero to Hero"
 
 **"User Spending Enrichment"** — Join two REST APIs into Snowflake with Openflow
 
 | | |
 |---|---|
-| **Duration** | 25-30 minutes (after a 10-15 min Openflow overview presentation) |
-| **Audience** | Internal Snowflake SEs/SAs, first-time Openflow users (Easy track) |
+| **Duration** | 25-30 minutes |
+| **Audience** | first-time Openflow users |
 | **Source APIs** | [DummyJSON Users](https://dummyjson.com/users) + [DummyJSON Carts](https://dummyjson.com/carts) (free, no auth) |
 
 ---
