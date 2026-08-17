@@ -1,4 +1,4 @@
-# TechUp27 — Openflow "Zero to Hero"
+# TechUp27 — REST API
 
 **"User Spending Enrichment"** — Join two REST APIs into Snowflake with Openflow
 
