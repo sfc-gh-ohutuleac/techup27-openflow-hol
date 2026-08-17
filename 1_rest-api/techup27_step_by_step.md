@@ -1,4 +1,4 @@
-# TechUp27 — REST API - Step by Step Guide
+# TechUp27 — Step by Step Guide
 
 ## Goal
 
@@ -80,6 +80,51 @@ Connections are created **between two existing processors**. You cannot create a
 <!-- TODO: add screenshot: create_connection.png -->
 
 > **Note:** In the steps below, each processor mentions which relationship to connect and where. Create the connection **after** you have added both the current processor and the next one.
+
+---
+
+## How to list FlowFiles and view their content
+
+When debugging, you can inspect what's queued between two processors:
+
+1. Click on a **connection** (the line between two processors)
+2. Click **"List queue"** in the context panel
+3. You'll see a list of FlowFiles currently waiting in that connection
+4. Click the **eye icon** on a FlowFile to view its **attributes**
+5. Click the **"View content"** button to see the actual **content** (the JSON body)
+
+This is essential for debugging:
+- After InvokeHTTP: check the API response is what you expect
+- After EvaluateJsonPath: verify attributes were extracted correctly
+- After AttributesToJSON: confirm the final flat JSON matches your table schema
+
+> **Tip:** To inspect FlowFiles mid-flow, temporarily stop the downstream processor. FlowFiles will queue up in the connection and you can inspect them. Start the processor again when done.
+
+---
+
+## How to test as you build
+
+You don't have to build the entire flow before testing. You can test incrementally:
+
+1. **After connecting your first two processors** (e.g., Trigger -> Fetch Users):
+   - Right-click the Trigger processor > **"Run Once"**
+   - A FlowFile will be generated and sent to Fetch Users
+   - Right-click Fetch Users > **"Run Once"**
+   - The FlowFile queues in the outgoing connection
+
+2. **Inspect the result:**
+   - Click the connection after Fetch Users
+   - Click **"List queue"** > click the eye icon > **"View content"**
+   - You should see the full JSON response from the API
+
+3. **Continue building:**
+   - Add the next processor, connect it
+   - Right-click that processor > **"Run Once"**
+   - Inspect the output connection again
+
+This "build one step, test, build next step" approach helps catch issues early. You'll know immediately if an API call failed, a JsonPath is wrong, or an attribute wasn't extracted correctly.
+
+> **Tip:** You can also right-click a processor and select **"Start"** to keep it running continuously, then **"Stop"** it when done testing. "Run Once" is better for controlled step-by-step testing.
 
 ---
 
@@ -267,6 +312,12 @@ PutSnowpipeStreaming2 requires two controller services. Create and enable them n
 > **About Authentication Strategy:** When set to `SNOWFLAKE_MANAGED`, the processor uses the runtime's built-in session token. No Account, User, Role, or Private Key configuration is needed — those fields can be left empty or set to any value.
 
 > **About Offset Tokens:** These track which records have been committed (for delivery guarantees). They must be **numeric**. We use `${user_id}` because it's already available as an attribute, is numeric (1-30), and is meaningful. In production you'd use a Kafka offset or sequence number.
+
+> **Reloading data after a mistake:** Because we use `user_id` as the offset token, the processor remembers which user IDs have already been committed. If you need to reload the data (e.g., wrong config on first run), simply **truncate the target table** and the processor will re-send all records on the next trigger:
+> ```sql
+> TRUNCATE TABLE TECHUP27.PUBLIC.USER_SPENDING;
+> ```
+> The offset tracking resets when the table is truncated.
 
 ---
 
