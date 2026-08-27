@@ -15,8 +15,9 @@
 | File | Description |
 |------|-------------|
 | `techup27_setup.sql` | SQL script to provision the environment. Run as ACCOUNTADMIN **before** the lab. |
+| `techup27_cleanup.sql` | SQL script to tear down all lab objects **after** the lab. |
 | `techup27_step_by_step.md` | Processor-by-processor cheat sheet with all configs and gotchas. |
-| `techup27_flow.json` | Working solution as an exportable NiFi flow definition. Can be imported via drag-and-drop or "Create Process Group" > "Import" in the NiFi UI. Use as a reference if stuck. |
+| `techup27_flow.json` | Working solution as an exportable NiFi flow definition. Can be imported via drag-and-drop or "Create Process Group" > "Import" in the NiFi UI. Use as a reference if stuck, or as a starting point. |
 | `README.md` | This file. |
 
 ---
