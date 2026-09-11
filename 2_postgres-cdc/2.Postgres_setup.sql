@@ -1,7 +1,6 @@
-
 -- ============================================================================
 --
--- OpenFlow PostgreSQL CDC Quickstart - PostgreSQL Initialization
+-- TECHUP27: Openflow PostgreSQL CDC - PostgreSQL Initialization
 --
 -- This script initializes the PostgreSQL database with:
 -- 1. Healthcare schema and tables
@@ -9,22 +8,15 @@
 -- 3. CDC configuration (publication for logical replication)
 --
 -- Run this script on your PostgreSQL instance
--- Prerequisites: PostgreSQL 12+, logical replication enabled
+-- Prerequisites: PostgreSQL 18 instance, logical replication enabled
 -- ============================================================================
+
+-- Run in DBeaver connected to the managed postgres instance !!
 
 -- Step 1: Grant Replication Privileges
 -- ----------------------------------------------------------------------------
--- Prerequisites: 
---   - PostgreSQL 12+ with logical replication enabled (wal_level = logical)
---   - For managed services, enable logical replication via service console/UI
-
--- Grant replication privileges to the postgres user (required for CDC)
--- To use a different user, run: psql -v pguser=youruser -f 0.init_healthcare.sql
--- Or set PGUSER environment variable before running
-
-
 select version();
-> **Note:** Snowflake Managed Postgres comes with `wal_level = logical` enabled by default. No configuration change needed.
+-- > **Note:** Snowflake Managed Postgres comes with `wal_level = logical` enabled by default. No configuration change needed.
 
 SHOW wal_level;
 -- Step 2: Create Schema
@@ -125,8 +117,6 @@ INSERT INTO doctors (first_name, last_name, specialization, department, phone, e
 ('James', 'Taylor', 'Orthopedics', 'Surgical Services', '555-0108', 'james.taylor@democlinic.example', 25, TRUE),
 ('Amanda', 'Anderson', 'Dermatology', 'Specialty Care', '555-0109', 'amanda.anderson@democlinic.example', 9, TRUE),
 ('Christopher', 'Thomas', 'Internal Medicine', 'Primary Care', '555-0110', 'christopher.thomas@democlinic.example', 14, TRUE);
-
-select * from doctors d 
 
 -- Insert 100 Patients (synthetic data with diverse demographics)
 INSERT INTO patients (first_name, last_name, date_of_birth, phone, email, address, city, state, insurance_provider, registration_date) VALUES
@@ -345,17 +335,20 @@ FROM appointments a
 WHERE a.status = 'completed'
 LIMIT 100;
 
-### Verify Data
- 
+-- Step 5: Verify Data
+-- ----------------------------------------------------------------------------
+
 SELECT 'patients' AS table_name, COUNT(*) AS row_count FROM healthcare.patients
 UNION ALL SELECT 'doctors', COUNT(*) FROM healthcare.doctors
 UNION ALL SELECT 'appointments', COUNT(*) FROM healthcare.appointments
 UNION ALL SELECT 'visits', COUNT(*) FROM healthcare.visits
 ORDER BY table_name;
+-- Should return : appointments 170, doctors 10, patients 100, visits 100
 
-## 6. Configure Postgres for CDC Replication
+-- Step 6: Configure Postgres for CDC Replication
+-- ----------------------------------------------------------------------------
 
-Run the following in DBeaver to enable logical replication:
+-- Run the following in DBeaver to enable logical replication:
  
 -- Verify wal_level is set to logical (required for CDC)
 SHOW wal_level;
@@ -371,33 +364,21 @@ CREATE PUBLICATION healthcare_cdc_publication FOR TABLE
 -- Verify the publication
 SELECT * FROM pg_publication;
 SELECT * FROM pg_publication_tables WHERE pubname = 'healthcare_cdc_publication';
-
-
-select * from appointments a ;--170
-select * from patients;--100
-select * from visits;--100
-select * from doctors;--10
-SELECT 
-  (SELECT COUNT(*) FROM healthcare.patients) as patients,
-  (SELECT COUNT(*) FROM healthcare.doctors) as doctors,
-  (SELECT COUNT(*) FROM healthcare.appointments) as appointments,
-  (SELECT COUNT(*) FROM healthcare.visits) as visits
+-- Should return: 4 tables
   
-
-    -- Run in DBeaver/psql against your Postgres instance after connector connects:
+-- Run in DBeaver/psql against your Postgres instance after connector connects - it prints the client IP address
 SELECT client_addr, usename, application_name 
 FROM pg_stat_activity 
 WHERE usename = 'snowflake_admin';
-  
-  SELECT schemaname, tablename FROM pg_publication_tables WHERE pubname = 'healthcare_cdc_publication';
-  
-  
-  SELECT
-    current_setting('wal_level') AS wal_level,
-    current_setting('max_replication_slots') AS max_replication_slots,
-    current_setting('max_wal_senders') AS max_wal_senders,
-    (SELECT count(*) FROM pg_publication) AS publication_count,
-    (SELECT count(*) FROM pg_replication_slots) AS active_slots;
-  
- --SELECT rolname, rolsuper, rolreplication FROM pg_roles WHERE rolname = '$PGUSER';
-  SELECT rolname, rolsuper, rolreplication FROM pg_roles WHERE rolname = 'snowflake_admin';
+
+-- Check replication config
+SELECT
+  current_setting('wal_level') AS wal_level,
+  current_setting('max_replication_slots') AS max_replication_slots,
+  current_setting('max_wal_senders') AS max_wal_senders,
+  (SELECT count(*) FROM pg_publication) AS publication_count,
+  (SELECT count(*) FROM pg_replication_slots) AS active_slots;
+-- Should return: at least 10 replication slots, and 1 publication count
+
+-- Check Role has rights to replicates
+SELECT rolname, rolsuper, rolreplication FROM pg_roles WHERE rolname = 'snowflake_admin';

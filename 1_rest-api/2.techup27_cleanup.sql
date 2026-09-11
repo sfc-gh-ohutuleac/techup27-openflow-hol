@@ -52,6 +52,7 @@ ALTER OPENFLOW RUNTIME IDENTIFIER($openflow_runtime)
 -- ============================================================================
 -- 3. REVOKE GRANTS
 -- ============================================================================
+USE ROLE ACCOUNTADMIN;
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
 REVOKE ALL PRIVILEGES ON ALL ICEBERG TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
 REVOKE ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
@@ -70,12 +71,22 @@ DROP DATABASE IF EXISTS TECHUP27;
 DROP INTEGRATION IF EXISTS TECHUP27_LAB_EAI;
 
 -- ============================================================================
--- 5. VERIFICATION
+-- 5. OPENFLOW
+-- ============================================================================
+ALTER OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME SUSPEND;
+-- ALTER OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME TERMINATE;
+-- DROP OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME;
+-- ALTER OPENFLOW DEPLOYMENT TECHUP27_DEPLOYMENT TERMINATE;
+-- DROP OPENFLOW DEPLOYMENT TECHUP27_DEPLOYMENT;
+
+-- ============================================================================
+-- 6. VERIFICATION
 -- ============================================================================
 -- Confirm everything is gone
 SHOW DATABASES LIKE 'TECHUP27';            -- Should return 0 rows
 SHOW INTEGRATIONS LIKE 'TECHUP27%';        -- Should return 0 rows
-
+SHOW OPENFLOW RUNTIMES;
+SHOW OPENFLOW DEPLOYMENTS;
 -- ============================================================================
 -- DONE! All lab resources have been cleaned up.
 --

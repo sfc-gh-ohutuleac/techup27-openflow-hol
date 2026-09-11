@@ -5,19 +5,20 @@ Build real data pipelines with **Openflow** (Apache NiFi on Snowpark Container S
 ## Repository Structure
 
 ```
+├── README.md                      # Starting Point
 ├── prerequisites.sql              # Global setup: role, database, deployment, runtime
+│
 ├── 1_rest-api/
 │   ├── README.md                  # Overview + step-by-step build guide
 │   ├── 1.techup27_setup.sql       # Snowflake objects (tables, EAI, grants)
 │   ├── 2.techup27_cleanup.sql     # Teardown script
-│   ├── techup27_flow.json         # Importable NiFi flow (solution/reference)
+│   └── 3.techup27_flow.json       # Importable NiFi flow (solution/reference)
+│
 └── 2_postgres-cdc/
-    ├── README.md                  # Use case overview & code structure
-    ├── 1.Pre_requisite.sql        # Postgres instance, network, DBeaver, Openflow
-    ├── 2.Postgres_healthcare.sql  # Healthcare schema & synthetic data (run in Postgres)
-    ├── 3.Openflow_setup.sql       # Deploy & configure the CDC connector
-    ├── 4.Postgres_CDC.sql         # Test real-time CDC (INSERT/UPDATE)
-    └── 5.Cleanup.sql              # Teardown all resources
+    ├── README.md                  # Use case overview & step-by-step guide
+    ├── 1.Snowflake_setup.sql      # Postgres instance, network, roles, EAI
+    ├── 2.Postgres_setup.sql       # Healthcare schema & synthetic data (run in Postgres)
+    └── 3.Cleanup.sql              # Teardown all resources
 ```
 
 ## Prerequisites

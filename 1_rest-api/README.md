@@ -32,7 +32,7 @@ the joined result into Snowflake â€” both a regular table and an Iceberg table â
 ## Prerequisites (complete before the session)
 
 1. **Before session prerequisites script**
-This should be completed before the session. Skip this step if already completed. If you haven't already, run the [`prerequisites.sql`](prerequisites.sql) in a Snowflake SQL Worksheet. This creates:
+This should be completed before the session. Skip this step if already completed. If you haven't already, run the [`prerequisites.sql`](../prerequisites.sql) in a Snowflake SQL Worksheet. This creates:
 
    - **OPENFLOW_ADMIN** role with required grants
    - **OPENFLOW** database and schema for the runtime
@@ -63,7 +63,7 @@ Both APIs are on the same host (`dummyjson.com`), free, no authentication requir
 
 ---
 
-## What You Learn
+## What You Will Learn
 
 ### 1. NiFi Canvas Basics
 - Creating a Process Group
@@ -377,7 +377,7 @@ PublishSnowpipeStreaming requires two controller services. Create and enable the
 2. Select **"Controller Services"**
 3. Click the **"+"** button
 4. Search for the service type, select it, click **Add**
-5. Click the **three dots** and **Enable** it
+5. Click the **three dots** and **Enable** it (Choose only Services from the Dropdown)
 
 | # | Type to search | Notes |
 |---|---------------|-------|
@@ -405,7 +405,7 @@ Go Back to the Canvas.
 | Offset Token End Expression | `${user_id}` |
 | Channel Group | `SHARED` |
 
-**Relationships:** Set terminate for success, failure, invalid
+**Relationships:** Set terminate for success, failure, invalid, empty
 
 **Add Connection:** Connect Step 8. `Build Record` processor -> Step 9. `Write to USER_SPENDING` processor -> on attribute `success`
 
@@ -494,6 +494,18 @@ SELECT COUNT(*) FROM TECHUP27.PUBLIC.USER_SPENDING_ICEBERG;
 
 ---
 
+## How to import a Flow in Openflow
+
+Openflow offers the ability to import flows in json format into canva. This enables for better change management, versioning and collaboration.
+
+You can use the [`3.techup27_flow.json`](3.techup27_flow.json) to import the Flow directly in canva.
+
+Drag and Drop a **Processor Group** in canva, and use the selector on the right to upload the json file.
+
+![alt text](images/image-1.png)
+
+---
+
 ## Success Criteria
 
 The lab is complete when:
@@ -502,6 +514,12 @@ The lab is complete when:
 - All columns are populated (USER_ID, names, cart totals, INGESTED_AT)
 - No bulletin errors on the NiFi canvas
 - Attendee understands the fetch -> enrich -> write pattern
+
+---
+
+## Cleanup
+
+When done with the lab, run [`2.techup27_cleanup.sql`](2.techup27_cleanup.sql) as ACCOUNTADMIN to tear down all lab-specific resources (database, EAI, network rule, grants). The script does **not** remove the shared Openflow deployment or runtime though.
 
 ---
 

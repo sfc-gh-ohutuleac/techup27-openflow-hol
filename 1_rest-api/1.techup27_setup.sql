@@ -190,10 +190,10 @@ SHOW EXTERNAL ACCESS INTEGRATIONS LIKE 'TECHUP27%';
 --     -> UpdateAttribute (set ingested_at = current timestamp)
 --     -> AttributesToJSON (convert all attributes to flat JSON content)
 --         |
---         +-> PutSnowpipeStreaming2 (Pipe: USER_SPENDING-STREAMING)         -> regular table
---         +-> PutSnowpipeStreaming2 (Pipe: USER_SPENDING_ICEBERG-STREAMING) -> Iceberg table
+--         +-> PublishSnowpipeStreaming (Table: USER_SPENDING)         -> regular table
+--         +-> PublishSnowpipeStreaming (Table: USER_SPENDING_ICEBERG) -> Iceberg table
 --
---   Note: Both destinations use the SAME processor type (PutSnowpipeStreaming2).
---   The ONLY difference is the Pipe name. Switching from regular to Iceberg is
+--   Note: Both destinations use the SAME processor type (PublishSnowpipeStreaming).
+--   The ONLY difference is the Table name. Switching from regular to Iceberg is
 --   a one-property change.
 -- ============================================================================
