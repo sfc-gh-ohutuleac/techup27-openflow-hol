@@ -148,6 +148,8 @@ SELECT version();
 ```
 You should see PostgreSQL 18.x output.
 
+![alt text](images/image-0.png)
+
 ---
 
 ### Step 3: Create Healthcare Demo Data (in DBeaver)
