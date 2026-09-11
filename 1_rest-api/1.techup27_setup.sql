@@ -1,4 +1,4 @@
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 -- TECHUP27: Openflow "Zero to Hero" - Easy Lab Setup Script
 -- 
 -- Lab: Ingest Users + Shopping Carts from DummyJSON API into Snowflake
@@ -9,9 +9,9 @@
 --   - https://dummyjson.com/carts/user/{id} (shopping cart per user)
 --
 -- Prerequisites:
---   - Openflow quickstart completed (deployment + runtime running)
 --   - ACCOUNTADMIN access
---   - Runtime role: QUICKSTART_ROLE (adjust if different)
+--   - prerequisites.sql completed (deployment + runtime running)
+--   - Runtime role: OPENFLOW_ADMIN (adjust if different)
 --
 -- What this script creates:
 --   1. Database TECHUP27 with schema PUBLIC
@@ -21,16 +21,16 @@
 --   5. All required grants to the Openflow runtime role
 --   6. Attaches EAI to the runtime (SOM) or instructions for UI (pre-SOM)
 --
--- Run this script as ACCOUNTADMIN before the lab session.
---------------------------------------------------------------------------------
+-- Run this script as ACCOUNTADMIN in your demo account.
+-------------------------------------------------------------------------------
 
 -- ============================================================================
 -- VARIABLES (adjust these to match your environment)
 -- ============================================================================
-SET openflow_role = 'QUICKSTART_ROLE';
-SET openflow_db = 'OPENFLOW';           -- Database where your runtime lives
-SET openflow_schema = 'OPENFLOW';       -- Schema where your runtime lives
-SET openflow_runtime = 'QUICKSTART_RUNTIME';  -- Your runtime name
+SET openflow_role = 'OPENFLOW_ADMIN';             -- Openflow Admin Role
+SET openflow_db = 'OPENFLOW';                     -- Database where your runtime lives
+SET openflow_schema = 'OPENFLOW';                 -- Schema where your runtime lives
+SET openflow_runtime = 'TECHUP27_RUNTIME';        -- Your runtime name
 
 -- ============================================================================
 -- 1. DATABASE & SCHEMA
@@ -110,6 +110,8 @@ DESCRIBE INTEGRATION TECHUP27_LAB_EAI;
 -- ============================================================================
 -- 5. GRANTS TO OPENFLOW RUNTIME ROLE
 -- ============================================================================
+USE ROLE ACCOUNTADMIN;
+
 -- Grant access to the lab database and tables
 GRANT USAGE ON DATABASE TECHUP27 TO ROLE IDENTIFIER($openflow_role);
 GRANT USAGE ON SCHEMA TECHUP27.PUBLIC TO ROLE IDENTIFIER($openflow_role);
@@ -126,30 +128,29 @@ GRANT USAGE ON INTEGRATION TECHUP27_LAB_EAI TO ROLE IDENTIFIER($openflow_role);
 -- ============================================================================
 -- 6. ATTACH EAI TO RUNTIME
 -- ============================================================================
--- There are TWO ways to attach an EAI to a runtime. Which one you use depends
--- on whether your account supports the Snowflake Object Model (SOM) for Openflow.
---
--- HOW TO TELL:
---   Run: SHOW OPENFLOW DEPLOYMENTS;
---   - If it works       -> SOM account -> use OPTION A (SQL)
---   - If syntax error   -> Pre-SOM account -> use OPTION B (UI)
---
--- OPTION A: SQL (SOM accounts only)
---   Pros: scriptable, repeatable, works in CI/CD
+-- There are TWO ways to attach an EAI to a runtime.
+----
+-- OPTION A: using SQL
 --   Note: This REPLACES all EAIs on the runtime. If your runtime already has
 --   other EAIs attached, include them all in the list.
 --
 --   To check existing EAIs before running:
---     DESCRIBE OPENFLOW RUNTIME <db>.<schema>.<runtime>;
---
+USE ROLE IDENTIFIER($openflow_role);
+USE DATABASE IDENTIFIER($openflow_db);
+USE SCHEMA IDENTIFIER($openflow_schema);
+
+SHOW OPENFLOW RUNTIMES;
+DESCRIBE OPENFLOW RUNTIME IDENTIFIER($openflow_runtime);
+
 --   If you have existing EAIs, include them:
 --     SET EXTERNAL_ACCESS_INTEGRATIONS = (EXISTING_EAI_1, TECHUP27_LAB_EAI);
+ALTER OPENFLOW RUNTIME IDENTIFIER($openflow_runtime)
+  SET EXTERNAL_ACCESS_INTEGRATIONS = (TECHUP27_LAB_EAI);
 
--- >>> Uncomment the line below ONLY if your account supports SOM <<<
--- ALTER OPENFLOW RUNTIME IDENTIFIER($openflow_db || '.' || $openflow_schema || '.' || $openflow_runtime)
---   SET EXTERNAL_ACCESS_INTEGRATIONS = (TECHUP27_LAB_EAI);
+-- Verify column external_access_integrations
+DESCRIBE OPENFLOW RUNTIME IDENTIFIER($openflow_runtime);
 
---
+----
 -- OPTION B: Openflow UI in Snowsight (works on ALL accounts, including pre-SOM)
 --   1. Navigate to Data Engineering > Openflow in Snowsight
 --   2. Click on your runtime
@@ -157,7 +158,6 @@ GRANT USAGE ON INTEGRATION TECHUP27_LAB_EAI TO ROLE IDENTIFIER($openflow_role);
 --   4. Select TECHUP27_LAB_EAI from the dropdown
 --   5. Click Save
 --   Pros: visual, additive (won't overwrite existing EAIs), no restart needed
---   This is the ONLY option for pre-SOM accounts.
 --
 
 -- ============================================================================

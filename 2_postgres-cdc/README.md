@@ -1,4 +1,4 @@
-# Usecase 2 - Ingest data from a Postgres database
+# TechUp27 - Usecase 2: Ingest data from a Postgres database
 
 **Snowflake Managed Postgres to Snowflake via OpenFlow CDC**
 

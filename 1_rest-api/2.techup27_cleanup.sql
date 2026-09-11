@@ -9,7 +9,13 @@
 -- This only cleans up the lab-specific database, EAI, and network rule.
 --------------------------------------------------------------------------------
 
-USE ROLE ACCOUNTADMIN;
+-- ============================================================================
+-- VARIABLES (adjust these to match your environment)
+-- ============================================================================
+SET openflow_role = 'OPENFLOW_ADMIN';             -- Openflow Admin Role
+SET openflow_db = 'OPENFLOW';                     -- Database where your runtime lives
+SET openflow_schema = 'OPENFLOW';                 -- Schema where your runtime lives
+SET openflow_runtime = 'TECHUP27_RUNTIME';        -- Your runtime name
 
 -- ============================================================================
 -- 1. STOP THE FLOW (do this in the NiFi UI first!)
@@ -27,10 +33,15 @@ USE ROLE ACCOUNTADMIN;
 -- 2. DETACH EAI FROM RUNTIME
 -- ============================================================================
 -- Remove the lab EAI from the runtime so it can be dropped cleanly.
+USE ROLE IDENTIFIER($openflow_role);
+USE DATABASE IDENTIFIER($openflow_db);
+USE SCHEMA IDENTIFIER($openflow_schema);
+
 --
--- OPTION A: SQL (SOM accounts only)
--- ALTER OPENFLOW RUNTIME <db>.<schema>.<runtime>
---   SET EXTERNAL_ACCESS_INTEGRATIONS = ();  -- or list only the EAIs you want to keep
+-- OPTION A: using SQL
+ALTER OPENFLOW RUNTIME IDENTIFIER($openflow_runtime)
+  SET EXTERNAL_ACCESS_INTEGRATIONS = ();  -- or list only the EAIs you want to keep
+
 --
 -- OPTION B: Openflow UI (works on all accounts)
 --   1. Navigate to Data Engineering > Openflow
@@ -41,17 +52,18 @@ USE ROLE ACCOUNTADMIN;
 -- ============================================================================
 -- 3. REVOKE GRANTS
 -- ============================================================================
-REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE QUICKSTART_ROLE;
-REVOKE ALL PRIVILEGES ON ALL ICEBERG TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE QUICKSTART_ROLE;
-REVOKE ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE QUICKSTART_ROLE;
-REVOKE USAGE ON SCHEMA TECHUP27.PUBLIC FROM ROLE QUICKSTART_ROLE;
-REVOKE USAGE ON DATABASE TECHUP27 FROM ROLE QUICKSTART_ROLE;
-REVOKE USAGE ON INTEGRATION TECHUP27_LAB_EAI FROM ROLE QUICKSTART_ROLE;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
+REVOKE ALL PRIVILEGES ON ALL ICEBERG TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
+REVOKE ALL PRIVILEGES ON FUTURE TABLES IN SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
+REVOKE USAGE ON SCHEMA TECHUP27.PUBLIC FROM ROLE IDENTIFIER($openflow_role);
+REVOKE USAGE ON DATABASE TECHUP27 FROM ROLE IDENTIFIER($openflow_role);
+REVOKE USAGE ON INTEGRATION TECHUP27_LAB_EAI FROM ROLE IDENTIFIER($openflow_role);
 
 -- ============================================================================
 -- 4. DROP OBJECTS (in dependency order)
 -- ============================================================================
 -- Drop the database (includes all tables, iceberg tables, and the network rule)
+USE ROLE ACCOUNTADMIN;
 DROP DATABASE IF EXISTS TECHUP27;
 
 -- Drop the EAI (must be done after detaching from runtime)
@@ -69,7 +81,7 @@ SHOW INTEGRATIONS LIKE 'TECHUP27%';        -- Should return 0 rows
 --
 -- What remains (intentionally not removed):
 --   - Openflow deployment and runtime (shared infrastructure)
---   - OPENFLOW_ADMIN / QUICKSTART_ROLE roles (from quickstart guide)
+--   - OPENFLOW_ADMIN role
 --   - User's default role setting
 --   - The flow on the NiFi canvas (delete manually if desired)
 -- ============================================================================
