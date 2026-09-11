@@ -65,7 +65,24 @@ REVOKE CREATE OPENFLOW CONNECTOR ON SCHEMA OPENFLOW.OPENFLOW FROM ROLE IDENTIFIE
 REVOKE USAGE ON POSTGRES INSTANCE IDENTIFIER($pg_instance) FROM ROLE IDENTIFIER($openflow_role);
 
 -- ============================================================================
--- 4. DROP LAB OBJECTS (in dependency order)
+-- 4. DROP POSTGRES NETWORK POLICY
+-- ============================================================================
+-- Detach the policy from the instance first, then drop
+ALTER POSTGRES INSTANCE IDENTIFIER($pg_instance) UNSET NETWORK_POLICY;
+
+DROP NETWORK POLICY IF EXISTS NP_PG_DEV_TEST;
+
+-- ============================================================================
+-- 5. SUSPEND OR DROP POSTGRES INSTANCE
+-- ============================================================================
+-- Suspend to stop compute costs but keep data:
+ALTER POSTGRES INSTANCE IDENTIFIER($pg_instance) SUSPEND;
+
+-- Or permanently drop (irreversible — all data is lost):
+DROP POSTGRES INSTANCE IDENTIFIER($pg_instance);
+
+-- ============================================================================
+-- 6. DROP LAB OBJECTS (in dependency order)
 -- ============================================================================
 USE ROLE ACCOUNTADMIN;
 
@@ -79,30 +96,20 @@ DROP WAREHOUSE IF EXISTS PG_WAREHOUSE;
 DROP INTEGRATION IF EXISTS TECHUP27_PGCDC_EAI;
 
 -- ============================================================================
--- 5. DROP POSTGRES NETWORK POLICY
--- ============================================================================
--- Detach the policy from the instance first, then drop
-ALTER POSTGRES INSTANCE IDENTIFIER($pg_instance) UNSET NETWORK_POLICY;
-
-DROP NETWORK POLICY IF EXISTS NP_PG_DEV_TEST;
-
--- ============================================================================
--- 6. SUSPEND OR DROP POSTGRES INSTANCE
--- ============================================================================
--- Suspend to stop compute costs but keep data:
-ALTER POSTGRES INSTANCE IDENTIFIER($pg_instance) SUSPEND;
-
--- Or permanently drop (irreversible — all data is lost):
--- DROP POSTGRES INSTANCE IDENTIFIER($pg_instance);
-
--- ============================================================================
 -- 7. OPENFLOW (optional — uncomment if you want to remove shared resources)
 -- ============================================================================
+ALTER OPENFLOW CONNECTOR OPENFLOW.OPENFLOW.TECHUP27_PG_CONNECTOR STOP;
+ALTER OPENFLOW CONNECTOR OPENFLOW.OPENFLOW.TECHUP27_PG_CONNECTOR TERMINATE;
+DROP OPENFLOW CONNECTOR OPENFLOW.OPENFLOW.TECHUP27_PG_CONNECTOR;
 ALTER OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME SUSPEND;
 -- ALTER OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME TERMINATE;
 -- DROP OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME;
 -- ALTER OPENFLOW DEPLOYMENT TECHUP27_DEPLOYMENT TERMINATE;
 -- DROP OPENFLOW DEPLOYMENT TECHUP27_DEPLOYMENT;
+
+SHOW OPENFLOW RUNTIMES;
+SHOW OPENFLOW CONNECTORS;
+SHOW OPENFLOW DEPLOYMENTS;
 
 -- ============================================================================
 -- 8. VERIFICATION

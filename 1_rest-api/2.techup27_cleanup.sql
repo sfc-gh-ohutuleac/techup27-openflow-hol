@@ -71,7 +71,7 @@ DROP DATABASE IF EXISTS TECHUP27;
 DROP INTEGRATION IF EXISTS TECHUP27_LAB_EAI;
 
 -- ============================================================================
--- 5. OPENFLOW
+-- 5. OPENFLOW (optional — uncomment if you want to remove shared resources)
 -- ============================================================================
 ALTER OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME SUSPEND;
 -- ALTER OPENFLOW RUNTIME OPENFLOW.OPENFLOW.TECHUP27_RUNTIME TERMINATE;

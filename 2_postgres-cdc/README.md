@@ -443,6 +443,14 @@ ORDER BY SEEN_AT DESC;
 
 Check the metadata columns `EVENT_TYPE` and `SEEN_AT` to get an idea which events came at which timestamp.
 
+#### **8.6 Check Connector Dashboard**
+
+On the Openflow > Installed Connectors Page Click **The three dots** and select **Monitor in Snowsight** to go to the Connector Dashboard.
+
+Here you can see all the activities of the connector, as well as the errors that might appear. Make sure you are using the **ACCOUNTADMIN** Role.
+
+![alt text](images/image-10.png)
+
 ---
 
 ## Success Criteria
